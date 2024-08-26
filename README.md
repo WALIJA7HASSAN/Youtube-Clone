@@ -59,7 +59,7 @@ This project is a YouTube clone built using React and the YouTube Data API v3. I
 - **Subscription Page**:
   ![Subscription Page](./src/assets/subscriptionPage.png)
 - **Skeleton Loader**:
-  ![Skeleton Loader](./src/assets/subscriptionPage.png)
+  ![Skeleton Loader](./src/assets/skeleton.png)
 
 ## Note
 
