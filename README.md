@@ -42,7 +42,7 @@ This project is a YouTube clone built using React and the YouTube Data API v3. I
     npm start
     ```
 
-5. **Visit the App**: Open your browser and go to `http://localhost:3000` to see the app in action.
+
 
 ## Screenshots
 
