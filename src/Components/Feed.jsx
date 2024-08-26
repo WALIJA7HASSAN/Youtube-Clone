@@ -13,6 +13,7 @@ const Feed = () => {
   const [direction, setDirection] = useState('grid')
   const [error, setError] = useState(false) // Use a boolean for error handling
   const navigate = useNavigate()
+  
 
   useEffect(() => {
     setVideos(null)
@@ -24,7 +25,7 @@ const Feed = () => {
         let data
         if (selectedCategory === 'All') {
           data = await fetchFromApi(
-            `search?part=snippet,id&maxResults=50&regionCode=PK&type=video`
+            `search?part=snippet,id&maxResults=50&regionCode=PK`
           )
         } else if (selectedCategory === 'New to You') {
           data = await fetchFromApi(

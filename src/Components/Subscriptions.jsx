@@ -18,10 +18,12 @@ const Subscriptions = () => {
   const [selectedChannel, setSelectedChannel] = useState(null)
 
   useEffect(() => {
-    // Check if subList has items before setting state
-    if (subList.length > 0) {
-      setSelectedChannel(subList[0].id)
+    if (subList.length === 0) {
+      setLoading(false) // Stop loading if no channels are available
+      return
     }
+
+    setSelectedChannel(subList[0].id)
   }, [subList])
 
   useEffect(() => {
@@ -44,8 +46,10 @@ const Subscriptions = () => {
       }
     }
 
-    fetchData()
-  }, [selectedChannel])
+    if (subList.length > 0) {
+      fetchData()
+    }
+  }, [selectedChannel, subList])
 
   const handleMouseDown = (e) => {
     if (!containerRef.current) return
@@ -57,7 +61,7 @@ const Subscriptions = () => {
   const handleMouseMove = (e) => {
     if (!isDragging || !containerRef.current) return
     const x = e.pageX - containerRef.current.offsetLeft
-    const walk = (x - startX) * 2 // Adjust scroll speed if needed
+    const walk = (x - startX) * 2
     containerRef.current.scrollLeft = scrollLeft - walk
   }
 
@@ -75,7 +79,7 @@ const Subscriptions = () => {
   const handleTouchMove = (e) => {
     if (!isDragging || !containerRef.current) return
     const x = e.touches[0].pageX - containerRef.current.offsetLeft
-    const walk = (x - startX) * 2 // Adjust scroll speed if needed
+    const walk = (x - startX) * 2
     containerRef.current.scrollLeft = scrollLeft - walk
   }
 
@@ -100,48 +104,53 @@ const Subscriptions = () => {
     )
   }
 
+  if (subList.length === 0) {
+    return (
+      <>
+        <Sidebar />
+        <SorryNotSupported
+          message={
+            "Hmm, seems like you don't have any subscribed channels. Discover new channels to get started!"
+          }
+        />
+      </>
+    )
+  }
+
   return (
     <>
       <Sidebar />
-      {subList.length > 0 ? (
-        <>
-          <section
-            ref={containerRef}
-            className="flex gap-8 px-6 py-3 w-full overflow-x-auto scrollbar-hidden"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+      <section
+        ref={containerRef}
+        className="flex gap-8 px-6 py-3 w-full overflow-x-auto scrollbar-hidden"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {subList.map((sub) => (
+          <div
+            key={sub.id}
+            className="text-center"
+            onClick={() => setSelectedChannel(sub.id)}
           >
-            {subList.map((sub) => (
-              <div key={sub.id} className="text-center" onClick={()=>setSelectedChannel(sub.id)}>
-                <div
-                  style={{ background: randomHexColorCode() }}
-                  className="rounded-full overflow-hidden w-[80px] h-[80px] shrink-0 grid place-content-center cursor-pointer"
-                >
-                  <p className="font-semibold text-[30px]">
-                    {sub.channelTitle.substring(0, 1)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[14px] mt-4 text-white">
-                    {sub.channelTitle}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </section>
-          <Videos videos={videos} direction={"grid"} />
-        </>
-      ) : (
-        <SorryNotSupported
-          message={
-            'Hmm, seems like your favorite channels are on vacation 🏖️. Check back soon to catch up on the latest videos!'
-          }
-        />
-      )}
+            <div
+              style={{ background: randomHexColorCode() }}
+              className="rounded-full overflow-hidden w-[80px] h-[80px] shrink-0 grid place-content-center cursor-pointer"
+            >
+              <p className="font-semibold text-[30px]">
+                {sub.channelTitle.substring(0, 1)}
+              </p>
+            </div>
+            <div>
+              <p className="text-[14px] mt-4 text-white">{sub.channelTitle}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+      <Videos videos={videos} direction={'grid'} />
     </>
   )
 }
